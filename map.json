@@ -5,47 +5,65 @@
     "title": "Global Plane Crashes (1908–2023)",
     "projection": {"type": "equalEarth"},
     "layer": [
+      { "data": {"sphere": {}}, "mark": {"type": "geoshape", "fill": "#eef6ff"} },
+      { "data": {"graticule": true}, "mark": {"type": "geoshape", "stroke": "#d0d7de", "strokeWidth": 0.4} },
       {
         "data": {
-          "url": "https://cdn.jsdelivr.net/npm/vega-datasets@2.11.0/data/world-110m.json",
+          "url": "https://unpkg.com/vega-datasets@2.11.0/data/world-110m.json",
           "format": {"type": "topojson", "feature": "countries"}
         },
-        "mark": {"type": "geoshape", "fill": "#e6e6e6", "stroke": "white"}
+        "mark": {"type": "geoshape", "fill": "#e6e6e6", "stroke": "white", "strokeWidth": 0.5}
       },
       {
         "data": {
-          "url": "https://vika-senthil.github.io/w10hw/WEEK10_Sheet1.csv",
-          "format": {"type": "csv"}
+          "url": "https://vika-senthil.github.io/w10hw/WEEK%2010%20-%20Sheet1.csv",
+          "format": {
+            "type": "csv",
+            "parse": {
+              "Latitude": "number",
+              "Longitude": "number",
+              "Fatalities": "number"
+            }
+          }
         },
         "transform": [
-          {"calculate": "year(datum.Date)", "as": "Year"},
+          {"filter": "isFinite(datum.Latitude) && isFinite(datum.Longitude)"},
+          {
+            "calculate": "isFinite(toNumber(datum.Fatalities)) && toNumber(datum.Fatalities) > 0 ? toNumber(datum.Fatalities) : 1",
+            "as": "fatalOK"
+          },
+          {
+            "calculate": "toNumber(substring(datum.Date, length(datum.Date)-4, length(datum.Date)))",
+            "as": "Year"
+          },
           {"filter": "datum.Year == yearSel"}
         ],
         "mark": {"type": "circle", "opacity": 0.75, "stroke": "#333", "strokeWidth": 0.2},
         "encoding": {
           "longitude": {"field": "Longitude", "type": "quantitative"},
           "latitude": {"field": "Latitude", "type": "quantitative"},
-          "size": {"field": "Fatalities", "type": "quantitative", "title": "Fatalities"},
-          "color": {"field": "Fatalities", "type": "quantitative", "scale": {"scheme": "reds"}},
+          "size": {
+            "field": "fatalOK",
+            "type": "quantitative",
+            "title": "Fatalities",
+            "legend": {"format": "~s"},
+            "scale": {"range": [30, 800]}
+          },
+          "color": {
+            "field": "fatalOK",
+            "type": "quantitative",
+            "scale": {"scheme": "reds"},
+            "title": "Fatalities"
+          },
           "tooltip": [
-            {"field": "Date", "type": "temporal", "title": "Date"},
-            {"field": "Location", "type": "nominal", "title": "Location"},
-            {"field": "Operator", "type": "nominal", "title": "Operator"},
-            {"field": "Fatalities", "type": "quantitative", "title": "Fatalities"}
+            {"field": "Date", "title": "Date"},
+            {"field": "Location", "title": "Location"},
+            {"field": "Operator", "title": "Operator"},
+            {"field": "Fatalities", "title": "Fatalities (raw)"},
+            {"field": "fatalOK", "title": "Fatalities (parsed)"},
+            {"field": "Latitude", "title": "Lat"},
+            {"field": "Longitude", "title": "Lon"}
           ]
-        }
-      },
-      {
-        "data": {
-          "values": [
-            {"Longitude": 105.0, "Latitude": 5.0, "Label": "MH370 (2014)"}
-          ]
-        },
-        "mark": {"type": "text", "fontSize": 12, "fontWeight": "bold", "dx": 10, "dy": -10, "color": "black"},
-        "encoding": {
-          "longitude": {"field": "Longitude", "type": "quantitative"},
-          "latitude": {"field": "Latitude", "type": "quantitative"},
-          "text": {"field": "Label"}
         }
       }
     ],
@@ -53,13 +71,7 @@
       {
         "name": "yearSel",
         "value": 2014,
-        "bind": {
-          "input": "range",
-          "min": 1908,
-          "max": 2023,
-          "step": 1,
-          "name": "Year: "
-        }
+        "bind": {"input": "range", "min": 1908, "max": 2023, "step": 1, "name": "Year: "}
       }
     ]
   }

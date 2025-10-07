@@ -1,76 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Global Plane Crashes (1908–2023)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Vega libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-
-  <style>
-    body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      margin: 20px;
-      background-color: #fafafa;
-    }
-    h1 {
-      margin-bottom: 8px;
-      font-size: 26px;
-      color: #222;
-    }
-    .caption {
-      color: #555;
-      font-size: 0.95rem;
-    }
-    .viz {
-      margin: 30px 0;
-    }
-  </style>
-</head>
-
-<body>
-  <h1>Global Plane Crashes (1908–2023)</h1>
-  <p class="caption">Use the slider to explore crashes by year. Hover over circles for details.</p>
-
-  <!-- Map visualisation -->
-  <div id="map" class="viz"></div>
-
-  <!-- Optional second visualisation -->
-  <div id="trend" class="viz"></div>
-
-  <script>
-    // Embed the map
-    vegaEmbed('#map', 'map.json', {actions: false});
-
-    // Simple second chart: crashes per year
-    const trendSpec = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "width": 850,
-      "height": 250,
-      "title": "Number of Crashes per Year",
-      "data": {
-        "url": "https://vika-senthil.github.io/w10hw/WEEK10_Sheet1.csv",
-        "format": {"type": "csv"}
-      },
-      "transform": [
-        {"timeUnit": "year", "field": "Date", "as": "Year"},
-        {"aggregate": [{"op": "count", "as": "CrashCount"}], "groupby": ["Year"]}
-      ],
-      "mark": {"type": "line", "point": true, "color": "#d73027"},
-      "encoding": {
-        "x": {"field": "Year", "type": "temporal", "title": "Year"},
-        "y": {"field": "CrashCount", "type": "quantitative", "title": "Crashes"}
-      }
-    };
-    vegaEmbed('#trend', trendSpec, {actions: false});
-  </script>
-
-  <footer class="caption">
-    <p>Data source: Airplane Crashes and Fatalities up to 2023 (Kaggle).<br>
-    Includes tooltips, annotation, and filter — aligned with FIT3179 Week 10 criteria.</p>
-  </footer>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Global Plane Crashes Map</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  </head>
+  <body>
+    <div id="vis"></div>
+    <script type="text/javascript">
+      vegaEmbed('#vis', 'map.json', { actions: false })
+        .then(function(result) {
+          console.log('Map loaded!');
+        })
+        .catch(console.error);
+    </script>
+  </body>
 </html>
