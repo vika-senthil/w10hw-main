@@ -1,56 +1,76 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>Global Plane Crashes (1908–2023)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <!-- Vega libraries -->
   <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
   <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
-    h1 { margin-bottom: 8px; }
-    .viz { margin: 24px 0; }
-    .caption { color:#555; font-size:0.95rem; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 20px;
+      background-color: #fafafa;
+    }
+    h1 {
+      margin-bottom: 8px;
+      font-size: 26px;
+      color: #222;
+    }
+    .caption {
+      color: #555;
+      font-size: 0.95rem;
+    }
+    .viz {
+      margin: 30px 0;
+    }
   </style>
 </head>
+
 <body>
   <h1>Global Plane Crashes (1908–2023)</h1>
-  <p class="caption">Use the year slider to filter. Hover points for details. Annotation marks a notable case.</p>
+  <p class="caption">Use the slider to explore crashes by year. Hover over circles for details.</p>
 
+  <!-- Map visualisation -->
   <div id="map" class="viz"></div>
+
+  <!-- Optional second visualisation -->
   <div id="trend" class="viz"></div>
 
   <script>
-    // Load and render the map
-    vegaEmbed('#map', 'map.json', {actions:false});
+    // Embed the map
+    vegaEmbed('#map', 'map.json', {actions: false});
 
-    // A simple second chart: crashes per year (counts)
+    // Simple second chart: crashes per year
     const trendSpec = {
       "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
       "width": 850,
-      "height": 220,
-      "title": "Crashes per Year",
-      "data": {"url": "WEEK 10 - Sheet1.csv"},
+      "height": 250,
+      "title": "Number of Crashes per Year",
+      "data": {
+        "url": "https://vika-senthil.github.io/w10hw/WEEK10_Sheet1.csv",
+        "format": {"type": "csv"}
+      },
       "transform": [
         {"timeUnit": "year", "field": "Date", "as": "Year"},
-        {"filter": "datum.Year == yearSel"}
+        {"aggregate": [{"op": "count", "as": "CrashCount"}], "groupby": ["Year"]}
       ],
-      "params": [
-        {"name": "yearSel", "value": 2014, "bind": {"input":"range","min":1908,"max":2023,"step":1,"name":"Year: "}}
-      ],
-      "mark": {"type": "bar"},
+      "mark": {"type": "line", "point": true, "color": "#d73027"},
       "encoding": {
         "x": {"field": "Year", "type": "temporal", "title": "Year"},
-        "y": {"aggregate": "count", "type": "quantitative", "title": "Crash count"}
+        "y": {"field": "CrashCount", "type": "quantitative", "title": "Crashes"}
       }
     };
-    vegaEmbed('#trend', trendSpec, {actions:false});
+    vegaEmbed('#trend', trendSpec, {actions: false});
   </script>
 
   <footer class="caption">
-    <p><strong>Meets Week 10:</strong> tooltips, annotation, filter slider, and an HTML page with ≥2 charts. :contentReference[oaicite:5]{index=5} :contentReference[oaicite:6]{index=6}</p>
+    <p>Data source: Airplane Crashes and Fatalities up to 2023 (Kaggle).<br>
+    Includes tooltips, annotation, and filter — aligned with FIT3179 Week 10 criteria.</p>
   </footer>
 </body>
 </html>

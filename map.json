@@ -10,7 +10,7 @@
           "url": "https://cdn.jsdelivr.net/npm/vega-datasets@2.11.0/data/world-110m.json",
           "format": {"type": "topojson", "feature": "countries"}
         },
-        "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
+        "mark": {"type": "geoshape", "fill": "#e6e6e6", "stroke": "white"}
       },
       {
         "data": {
@@ -18,57 +18,47 @@
           "format": {"type": "csv"}
         },
         "transform": [
-          {
-            "timeUnit": "year",
-            "field": "Date",
-            "as": "Year"
-          },
-          {
-            "filter": "datum.Year == yearSel"
-          }
+          {"calculate": "year(datum.Date)", "as": "Year"},
+          {"filter": "datum.Year == yearSel"}
         ],
-        "params": [
-          {
-            "name": "yearSel",
-            "value": 2014,
-            "bind": {
-              "input":"range",
-              "min":1908,
-              "max":2023,
-              "step":1,
-              "name":"Year: "
-            }
-          }
-        ],
-        "mark": {"type": "circle", "opacity": 0.7},
+        "mark": {"type": "circle", "opacity": 0.75, "stroke": "#333", "strokeWidth": 0.2},
         "encoding": {
           "longitude": {"field": "Longitude", "type": "quantitative"},
           "latitude": {"field": "Latitude", "type": "quantitative"},
           "size": {"field": "Fatalities", "type": "quantitative", "title": "Fatalities"},
           "color": {"field": "Fatalities", "type": "quantitative", "scale": {"scheme": "reds"}},
           "tooltip": [
-            {"field": "Date", "title": "Date"},
-            {"field": "Location", "title": "Location"},
-            {"field": "Operator", "title": "Operator"},
-            {"field": "Fatalities", "title": "Fatalities"}
+            {"field": "Date", "type": "temporal", "title": "Date"},
+            {"field": "Location", "type": "nominal", "title": "Location"},
+            {"field": "Operator", "type": "nominal", "title": "Operator"},
+            {"field": "Fatalities", "type": "quantitative", "title": "Fatalities"}
           ]
         }
       },
       {
         "data": {
           "values": [
-            {
-              "Longitude": 105.0,
-              "Latitude": 5.0,
-              "Label": "MH370 (2014)"
-            }
+            {"Longitude": 105.0, "Latitude": 5.0, "Label": "MH370 (2014)"}
           ]
         },
-        "mark": {"type": "text", "fontSize": 12, "fontWeight": "bold", "dx": 8, "dy": -8},
+        "mark": {"type": "text", "fontSize": 12, "fontWeight": "bold", "dx": 10, "dy": -10, "color": "black"},
         "encoding": {
           "longitude": {"field": "Longitude", "type": "quantitative"},
           "latitude": {"field": "Latitude", "type": "quantitative"},
           "text": {"field": "Label"}
+        }
+      }
+    ],
+    "params": [
+      {
+        "name": "yearSel",
+        "value": 2014,
+        "bind": {
+          "input": "range",
+          "min": 1908,
+          "max": 2023,
+          "step": 1,
+          "name": "Year: "
         }
       }
     ]
