@@ -1,20 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Global Plane Crashes Map</title>
-    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-  </head>
-  <body>
-    <div id="vis"></div>
-    <script type="text/javascript">
-      vegaEmbed('#vis', 'map.json', { actions: false })
-        .then(function(result) {
-          console.log('Map loaded!');
-        })
-        .catch(console.error);
-    </script>
-  </body>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <h2>Hello from GitHub Pages</h2>
+  <div id="viz"></div>
+  <script>
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "data": {"values":[{"x":1,"y":1},{"x":2,"y":3}]},
+      "mark": "line",
+      "encoding": {"x":{"field":"x","type":"quantitative"}, "y":{"field":"y","type":"quantitative"}}
+    };
+    vegaEmbed('#viz', spec, {actions:false});
+  </script>
+</body>
 </html>
